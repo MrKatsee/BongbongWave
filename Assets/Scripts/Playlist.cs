@@ -18,6 +18,7 @@ public class Playlist : MonoBehaviour
     private int curMusicIndex = 0;
     private int maxCount;
     private int minCount;
+    public float playtime = 0f;
 
     public void Init()
     {
@@ -26,16 +27,20 @@ public class Playlist : MonoBehaviour
         maxCount = musics.Count;
         minCount = 0;
         curMusicIndex = 0;
+        playtime = 0f;
     }
 
     public bool SkipToNext()
     {
         //가능하면 true 불가능하면 false
+        playtime = 0f;
+
         if (++curMusicIndex >= maxCount)
         {
             curMusicIndex--;
             return false;
         }
+
 
         return true;
     }
@@ -43,6 +48,8 @@ public class Playlist : MonoBehaviour
     public bool SkipToPrev()
     {
         //가능하면 true 불가능하면 false
+        playtime = 0f;
+
         if (--curMusicIndex < minCount)
         {
             curMusicIndex++;
@@ -55,6 +62,7 @@ public class Playlist : MonoBehaviour
     public void AddMusic(Music music)
     {
         musics.Add(music);
+        maxCount = musics.Count;
     }
 
     public AudioClip GetClip()

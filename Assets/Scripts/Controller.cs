@@ -30,34 +30,73 @@ public class Controller : MonoBehaviour
         Init();
     }
 
+    private void Update()
+    {
+        if (isMusicOn)
+        {
+            if (!audioSource.isPlaying)
+                MusicSkipToNext();
+        }
+    }
+
     private void Init()
     {
         audioSource = GetComponent<AudioSource>();
+    }
+
+    public void OnStartButtonClicked()
+    {
+        if (isMusicOn) MusicStop();
+        else MusicStart();
     }
 
     public void MusicStart()
     {
         //curPlaylist의 Header에 저장된 시점부터 재생한다.
         AudioClip clip = CurPlaylist.GetClip();
-        if (clip == null) return;
+        if (clip == null) return;        
 
         audioSource.clip = clip;
         audioSource.Play();
+
+        float playtime = CurPlaylist.playtime;
+        audioSource.time = playtime;
+
+        isMusicOn = true;
     }
 
     public void MusicStop()
     {
         //재생 중인 파일을 멈추고 Header에 정보를 저장한다.
+        float playtime = audioSource.time;
+        CurPlaylist.playtime = playtime;
+
+        audioSource.Stop();
+
+        isMusicOn = false;
     }
 
     public void MusicSkipToNext()
     {
-
+        //넘길 수 있으면 Start
+        //없으면 Stop
+        if (CurPlaylist.SkipToNext())
+            MusicStart();
+        else
+        {
+            MusicStop();
+            CurPlaylist.Init();
+        }
     }
 
     public void MusicSkipToPrev()
     {
-
+        if (CurPlaylist.SkipToPrev())
+            MusicStart();
+        else
+        {
+            MusicStart();
+        }
     }
 
     public void OnOptionButtonClicked()
