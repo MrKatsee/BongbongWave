@@ -22,6 +22,7 @@ public class Controller : MonoBehaviour
     }
 
     private bool isMusicOn = false;
+    private bool isPlaylistOn = false;
 
     private AudioSource audioSource;
 
@@ -63,6 +64,7 @@ public class Controller : MonoBehaviour
         audioSource.time = playtime;
 
         isMusicOn = true;
+        UIManager.Instance.SetUIOnStartButtonClicked(isMusicOn);
     }
 
     public void MusicStop()
@@ -74,6 +76,7 @@ public class Controller : MonoBehaviour
         audioSource.Stop();
 
         isMusicOn = false;
+        UIManager.Instance.SetUIOnStartButtonClicked(isMusicOn);
     }
 
     public void MusicSkipToNext()
@@ -102,6 +105,24 @@ public class Controller : MonoBehaviour
     public void OnOptionButtonClicked()
     {
 
+    }
+
+    public void OnPlaylistButtonClicked()
+    {
+        if (isPlaylistOn) SetPlaylistOff();
+        else SetPlaylistOn();
+    }
+
+    private void SetPlaylistOn()
+    {
+        isPlaylistOn = true;
+        UIManager.Instance.SetUIOnPlaylistButtonClicked(isPlaylistOn);
+    }
+
+    private void SetPlaylistOff()
+    {
+        isPlaylistOn = false;
+        UIManager.Instance.SetUIOnPlaylistButtonClicked(isPlaylistOn);
     }
 
     private void AddMusic(string filePath)
