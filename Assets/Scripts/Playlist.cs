@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Playlist : MonoBehaviour
+public class Playlist : MonoBehaviour, IData
 {
     public static Playlist Init_Playlist()
     {
@@ -11,6 +11,8 @@ public class Playlist : MonoBehaviour
 
         playlistObject.Init();
 
+        DataManager.Instance.AddPlaylist(playlistObject);
+
         return playlistObject;
     }
 
@@ -18,7 +20,10 @@ public class Playlist : MonoBehaviour
     private int curMusicIndex = 0;
     private int maxCount;
     private int minCount;
+
     public float playtime = 0f;
+    private string playlistName;
+    private int playlistIndex;
 
     public void Init()
     {
@@ -59,8 +64,9 @@ public class Playlist : MonoBehaviour
         return true;
     }
 
-    public void AddMusic(Music music)
+    public void AddMusic(string filePath)
     {
+        Music music = Music.Init_Music(musics.Count, filePath);
         musics.Add(music);
         maxCount = musics.Count;
     }
@@ -72,5 +78,37 @@ public class Playlist : MonoBehaviour
         AudioClip clip = musics[curMusicIndex].clip;
 
         return clip;
+    }
+
+    public void SetName(string name)
+    {
+        playlistName = name;
+    }
+
+    public string GetName()
+    {
+        return playlistName;
+    }
+
+    public void SetIndex(int index)
+    {
+        playlistIndex = index;
+    }
+
+    public int GetIndex()
+    {
+        return playlistIndex;
+    }
+
+    public List<IData> GetDatas()
+    {
+        var datas = new List<IData>();
+
+        foreach (var m in musics)
+        {
+            datas.Add(m);
+        }
+
+        return datas;
     }
 }

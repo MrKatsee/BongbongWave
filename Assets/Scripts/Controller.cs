@@ -6,6 +6,18 @@ using System;
 
 public class Controller : MonoBehaviour
 {
+    private static Controller instance = null;
+    public static Controller Instance
+    {
+        get { return instance; }
+    }
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
+
     private Playlist curPlaylist = null;
     public Playlist CurPlaylist
     {
@@ -29,6 +41,7 @@ public class Controller : MonoBehaviour
     private void Start()
     {
         Init();
+        Test();
     }
 
     private void Update()
@@ -38,6 +51,11 @@ public class Controller : MonoBehaviour
             if (!audioSource.isPlaying)
                 MusicSkipToNext();
         }
+    }
+
+    private void Test()
+    {
+        AddMusic(@"C:\Users\CIEN1\Documents\OnetheLand-multi2\Assets\Sound\아이리스\voice_iris_gameStart.wav");
     }
 
     private void Init()
@@ -129,22 +147,21 @@ public class Controller : MonoBehaviour
     {
         //curPlaylist가 있으면, 거기에 Add
         //없으면, 새로운 Playlist를 만들어줌
-        Music music = Music.Init_Music(filePath);
+        Debug.Log(filePath);
 
         if (CurPlaylist != null)
         {
-            CurPlaylist.AddMusic(music);
+            CurPlaylist.AddMusic(filePath);
         }
         else
         {
             Playlist playlist = Playlist.Init_Playlist();
 
             CurPlaylist = playlist;
-            CurPlaylist.AddMusic(music);
+            CurPlaylist.AddMusic(filePath);
 
             MusicStart();
         }
-
     }
 
     #region Drag and Drop(Reference Code)

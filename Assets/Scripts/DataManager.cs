@@ -23,12 +23,22 @@ public class DataManager : MonoBehaviour
 
     public void AddPlaylist(Playlist playlist)
     {
+        string playlistName = $"Playlist_{playlists.Count + 1}";
+
+        playlist.SetName(playlistName);
+        playlist.SetIndex(playlists.Count);
+
         playlists.Add(playlist);
     }
 
     public Playlist GetPlaylist(int i)
     {
         return playlists[i];
+    }
+
+    public List<Playlist> GetPlaylistAll()
+    {
+        return playlists;
     }
 
     public void SavePlaylists()
