@@ -11,6 +11,22 @@ public enum CurrentDataType
 public class UIManager : MonoBehaviour
 {
     //유니티 UI 관련된 코-드
+    /*
+        해야할 것
+        - Playlist UI 기능 구현 (Add, Delete)
+        - Music UI 디자인
+        - Music UI 기능 구현 (Select, Delete, UI_Text(PlaylistName))
+        - Music -> Playlist 버튼 구현
+        - 저장 / 불러오기
+        - Controller에 현재 재생 중인 Music Name 출력
+
+        애매한 것
+        - Music -> Playlist? Playlist -> Music?
+        - UIManager, Controller 등, 싱글톤의 과다한 사용 및 싱글톤 간 역할 모호
+
+        이슈
+        - 넣자마자 재생이 안됨
+    */
 
     private static UIManager instance = null;
     public static UIManager Instance
