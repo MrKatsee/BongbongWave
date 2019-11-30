@@ -77,6 +77,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    //이 곳을 기점으로 구분 가능
+    //위를 Controller, 아래를 PopUpController(? / Music Select 동안 임시로 띄워지는 모든 UI Object, Component를 다루는 곳)로 역할을 구분 지을 수 있을 듯
+
     private CurrentDataType curDataType;
 
     private void LoadButtons()
