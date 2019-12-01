@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum CurrentDataType
+public enum DataType
 {
     NONE, PLAYLIST, MUSIC
 }
@@ -13,16 +13,16 @@ public class UIManager : MonoBehaviour
     //유니티 UI 관련된 코-드
     /*
         해야할 것
-        - Playlist UI 기능 구현 (Add, Delete)
-        - Music UI 디자인
-        - Music UI 기능 구현 (Select, Delete, UI_Text(PlaylistName))
-        - Music -> Playlist 버튼 구현
-        - 저장 / 불러오기
+        O Playlist UI 기능 구현 (Add, Delete)
+        O Music UI 디자인
+        O Music UI 기능 구현 (Select, Delete, UI_Text(PlaylistName))
+        O Music -> Playlist 버튼 구현
+        O 저장 / 불러오기
         - Controller에 현재 재생 중인 Music Name 출력
 
         애매한 것
         - Music -> Playlist? Playlist -> Music?
-        - UIManager, Controller 등, 싱글톤의 과다한 사용 및 싱글톤 간 역할 모호
+        - UIManager 이름? 대충 MusicSelectManager 정도가 더 나을듯
 
         이슈
         - 넣자마자 재생이 안됨
@@ -38,54 +38,26 @@ public class UIManager : MonoBehaviour
     {
         if (instance == null) instance = this;
 
-        curDataType = CurrentDataType.NONE;
+        curDataType = DataType.NONE;
         buttons = new List<ButtonObject>();
     }
 
     //유니티 엔진 Inspector 창을 통해 할당
-    public Sprite startButtonSprite;
-    public Sprite stopButtonSprite;
-    public Sprite playlistOnSprite;
-    public Sprite playlistOffSprtie;
-
-    public Image startButton;
-    public Image playlistButton;
-
-    public GameObject playlistCanvas;
     public GameObject btnPrefab;
     public Transform btnParentTransform;
+    public GameObject plusButton;
+    public Text musicSelectCanvasText;
 
-    public void SetUIOnStartButtonClicked(bool isStarting)
-    {
-        if (isStarting) startButton.sprite = stopButtonSprite;
-        else startButton.sprite = startButtonSprite;
-    }
+    public DataType curDataType;
 
-    public void SetUIOnPlaylistButtonClicked(bool isPlaylistSettingOn)
-    {
-        playlistCanvas.SetActive(isPlaylistSettingOn);
+    private Playlist selectedPlaylist = null;
 
-        if (isPlaylistSettingOn)
-        {
-            playlistButton.sprite = playlistOnSprite;
-            LoadButtons();
-        }
-        else
-        {
-            playlistButton.sprite = playlistOffSprtie;
-            curDataType = CurrentDataType.NONE;
-        }
-    }
+    private string playlistsText = "Playlists";
 
-    //이 곳을 기점으로 구분 가능
-    //위를 Controller, 아래를 PopUpController(? / Music Select 동안 임시로 띄워지는 모든 UI Object, Component를 다루는 곳)로 역할을 구분 지을 수 있을 듯
-
-    private CurrentDataType curDataType;
-
-    private void LoadButtons()
+    public void LoadButtons(DataType type)
     {
         List<IData> datas = new List<IData>();
-        if (curDataType == CurrentDataType.NONE)
+        if (type == DataType.PLAYLIST)
         {
             var playlists = DataManager.Instance.GetPlaylistAll();
 
@@ -94,16 +66,29 @@ public class UIManager : MonoBehaviour
                 datas.Add(playlist);
             }
 
-            curDataType = CurrentDataType.PLAYLIST;
+            curDataType = DataType.PLAYLIST;
+
+            plusButton.SetActive(true);
+
+            musicSelectCanvasText.text = playlistsText;
         }
-        else if (curDataType == CurrentDataType.PLAYLIST)
+        else if (type == DataType.MUSIC)
         {
-            datas = CurBtn.GetButtonData().GetDatas();
+            var musics = selectedPlaylist.GetDatas();
 
-            curDataType = CurrentDataType.MUSIC;
+            foreach (var music in musics)
+            {
+                datas.Add(music);
+            }
+
+            curDataType = DataType.MUSIC;
+
+            plusButton.SetActive(false);
+
+            musicSelectCanvasText.text = selectedPlaylist.GetName();
         }
 
-        foreach(var b in buttons)
+        foreach (var b in buttons)
         {
             b.OnDestroyCallBack();
         }
@@ -157,13 +142,22 @@ public class UIManager : MonoBehaviour
     {
         switch (curDataType)
         {
-            case CurrentDataType.NONE:
+            case DataType.NONE:
                 break;
-            case CurrentDataType.PLAYLIST:
-                LoadButtons();
+            case DataType.PLAYLIST:
+                int playlistIndex = CurBtn.GetButtonData().GetIndex();
+                selectedPlaylist = DataManager.Instance.GetPlaylist(playlistIndex);
+
+                LoadButtons(DataType.MUSIC);
                 break;
-            case CurrentDataType.MUSIC:
-                curDataType = CurrentDataType.NONE;
+            case DataType.MUSIC:
+                int musicIndex = CurBtn.GetButtonData().GetIndex();
+
+                Controller.Instance.CurPlaylist = selectedPlaylist;
+                Controller.Instance.SetUIOnPlaylistButtonClicked(false);
+                Controller.Instance.MusicSkipByIndex(musicIndex);
+
+                selectedPlaylist = null;
                 break;
         }
     }
@@ -184,5 +178,59 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
 
         isSingleClicked = false;
+    }
+
+    public void OnPlaylistPlusButtonClicked()
+    {
+        Playlist.Init_Playlist();
+        curDataType = DataType.NONE;
+        LoadButtons(DataType.PLAYLIST);
+    }
+
+    public void OnDeleteButtonClicked()
+    {
+        if (CurBtn == null)
+            return;
+
+        if (curDataType == DataType.PLAYLIST)
+            PlaylistDelete();
+        else if (curDataType == DataType.MUSIC)
+            MusicDelete();
+    }
+
+    private void PlaylistDelete()
+    {
+        int index = CurBtn.GetButtonData().GetIndex();
+        DataManager.Instance.DeletePlaylist(index);
+        LoadButtons(DataType.PLAYLIST);
+    }
+
+    private void MusicDelete()
+    {
+        int index = CurBtn.GetButtonData().GetIndex();
+        selectedPlaylist.DeleteMusic(index);
+        LoadButtons(DataType.MUSIC);
+    }
+
+    public void OnBackButtonClicked()
+    {
+        switch (curDataType)
+        {
+            case DataType.NONE:
+                break;
+            case DataType.PLAYLIST:
+                Controller.Instance.SetUIOnPlaylistButtonClicked(false);
+                break;
+            case DataType.MUSIC:
+                LoadButtons(DataType.PLAYLIST);
+                break;
+        }
+    }
+
+
+    public void AddMusicInSelectedPlaylist(string filePath)
+    {
+        selectedPlaylist.AddMusic(filePath);
+        LoadButtons(DataType.MUSIC);
     }
 }

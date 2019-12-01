@@ -64,20 +64,53 @@ public class Playlist : MonoBehaviour, IData
         return true;
     }
 
+    public bool SkipByIndex(int index)
+    {
+        if (index >= maxCount)
+        {
+            return false;
+        }
+
+        playtime = 0f;
+        curMusicIndex = index;
+
+        return true;
+    }
+
     public void AddMusic(string filePath)
     {
         Music music = Music.Init_Music(musics.Count, filePath);
         musics.Add(music);
         maxCount = musics.Count;
+
+        DataManager.Instance.SavePlaylists();
+    }
+
+    public void DeleteMusic(int index)
+    {
+        if (index == curMusicIndex) Controller.Instance.MusicSkipToNext();
+
+        musics.Remove(musics[index]);
+        maxCount = musics.Count;
+
+        if (index < curMusicIndex) curMusicIndex--;
+
+        DataManager.Instance.SavePlaylists();
     }
 
     public AudioClip GetClip()
     {
         if (musics.Count == 0) return null;
+        else if (curMusicIndex >= maxCount) return null;
 
         AudioClip clip = musics[curMusicIndex].clip;
 
         return clip;
+    }
+
+    public string GetCurrentMusicName()
+    {
+        return musics[curMusicIndex].GetName();
     }
 
     public void SetName(string name)
@@ -100,15 +133,42 @@ public class Playlist : MonoBehaviour, IData
         return playlistIndex;
     }
 
-    public List<IData> GetDatas()
+    public List<Music> GetDatas()
     {
-        var datas = new List<IData>();
+        return musics;
+    }
 
-        foreach (var m in musics)
+    public override string ToString()
+    {
+        //"PlaylisIndex_PlaylistName_musicPath1&musicPath2&...&musicPathN"
+        string playlistInfo = $"{playlistIndex}^{playlistName}^";
+
+        int i = 0;
+        foreach (var music in musics)
         {
-            datas.Add(m);
+            playlistInfo = $"{playlistInfo}{music.ToString()}";
+
+            if (++i < musics.Count)
+                playlistInfo = $"{playlistInfo}&";
         }
 
-        return datas;
+        return playlistInfo;
+    }
+
+    public void LoadPlaylist(string data)
+    {
+        string[] splitedData = data.Split('^');
+
+        SetIndex(int.Parse(splitedData[0]));
+        SetName(splitedData[1]);
+
+        string[] musicPaths = splitedData[2].Split('&');
+
+        if (splitedData[2] == string.Empty) return;
+
+        foreach(var path in musicPaths)
+        {
+            AddMusic(path);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using B83.Win32;
 using System;
 
@@ -28,8 +29,7 @@ public class Controller : MonoBehaviour
             curPlaylist = value;
 
             curPlaylist.Init();
-
-            MusicStart();
+            SetMusicDescriptionText(CurPlaylist.GetCurrentMusicName());
         }
     }
 
@@ -41,7 +41,7 @@ public class Controller : MonoBehaviour
     private void Start()
     {
         Init();
-        Test();
+        //Test();
     }
 
     private void Update()
@@ -55,12 +55,14 @@ public class Controller : MonoBehaviour
 
     private void Test()
     {
-        AddMusic(@"C:\Users\CIEN1\Documents\OnetheLand-multi2\Assets\Sound\아이리스\voice_iris_gameStart.wav");
+        AddMusic(@"C:\Users\CIEN1\Documents\BongbongWave\Assets\Resources\voice_iris_gameStart.wav");
     }
 
     private void Init()
     {
         audioSource = GetComponent<AudioSource>();
+        if (CurPlaylist == null)
+            CurPlaylist = DataManager.Instance.GetPlaylist(0);
     }
 
     public void OnStartButtonClicked()
@@ -82,7 +84,8 @@ public class Controller : MonoBehaviour
         audioSource.time = playtime;
 
         isMusicOn = true;
-        UIManager.Instance.SetUIOnStartButtonClicked(isMusicOn);
+        SetUIOnStartButtonClicked(isMusicOn);
+        SetMusicDescriptionText(CurPlaylist.GetCurrentMusicName());
     }
 
     public void MusicStop()
@@ -94,7 +97,7 @@ public class Controller : MonoBehaviour
         audioSource.Stop();
 
         isMusicOn = false;
-        UIManager.Instance.SetUIOnStartButtonClicked(isMusicOn);
+        SetUIOnStartButtonClicked(isMusicOn);
     }
 
     public void MusicSkipToNext()
@@ -120,6 +123,12 @@ public class Controller : MonoBehaviour
         }
     }
 
+    public void MusicSkipByIndex(int index)
+    {
+        if (CurPlaylist.SkipByIndex(index))
+            MusicStart();
+    }
+
     public void OnOptionButtonClicked()
     {
 
@@ -134,13 +143,13 @@ public class Controller : MonoBehaviour
     private void SetPlaylistOn()
     {
         isPlaylistOn = true;
-        UIManager.Instance.SetUIOnPlaylistButtonClicked(isPlaylistOn);
+        SetUIOnPlaylistButtonClicked(isPlaylistOn);
     }
 
     private void SetPlaylistOff()
     {
         isPlaylistOn = false;
-        UIManager.Instance.SetUIOnPlaylistButtonClicked(isPlaylistOn);
+        SetUIOnPlaylistButtonClicked(isPlaylistOn);
     }
 
     private void AddMusic(string filePath)
@@ -148,6 +157,15 @@ public class Controller : MonoBehaviour
         //curPlaylist가 있으면, 거기에 Add
         //없으면, 새로운 Playlist를 만들어줌
         Debug.Log(filePath);
+
+        if (isPlaylistOn)
+        {
+            if (UIManager.Instance.curDataType == DataType.MUSIC)
+            {
+                UIManager.Instance.AddMusicInSelectedPlaylist(filePath);
+                return;
+            }
+        }
 
         if (CurPlaylist != null)
         {
@@ -159,9 +177,46 @@ public class Controller : MonoBehaviour
 
             CurPlaylist = playlist;
             CurPlaylist.AddMusic(filePath);
-
-            MusicStart();
         }
+    }
+
+    public Sprite startButtonSprite;
+    public Sprite stopButtonSprite;
+    public Sprite playlistOnSprite;
+    public Sprite playlistOffSprtie;
+
+    public Image startButton;
+    public Image playlistButton;
+
+    public GameObject playlistCanvas;
+
+    public void SetUIOnStartButtonClicked(bool isStarting)
+    {
+        if (isStarting) startButton.sprite = stopButtonSprite;
+        else startButton.sprite = startButtonSprite;
+    }
+
+    public void SetUIOnPlaylistButtonClicked(bool isPlaylistSettingOn)
+    {
+        playlistCanvas.SetActive(isPlaylistSettingOn);
+        isPlaylistOn = isPlaylistSettingOn;
+
+        if (isPlaylistSettingOn)
+        {
+            playlistButton.sprite = playlistOnSprite;
+            UIManager.Instance.LoadButtons(DataType.PLAYLIST);
+        }
+        else
+        {
+            playlistButton.sprite = playlistOffSprtie;
+            UIManager.Instance.curDataType = DataType.NONE;
+        }
+    }
+
+    public Text musicNameText;
+    private void SetMusicDescriptionText(string description)
+    {
+        musicNameText.text = description;
     }
 
     #region Drag and Drop(Reference Code)

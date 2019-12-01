@@ -16,7 +16,7 @@ public class Music : MonoBehaviour, IData
         return musicObject;
     }
 
-    public string filePath = string.Empty;
+    public string path = string.Empty;
     private string musicName;
     private int musicIndex;
 
@@ -24,11 +24,11 @@ public class Music : MonoBehaviour, IData
 
     public void Init(int i, string path)
     {
-        filePath = $"file:///{path}";       //윈도우 환경의 경우, file:///, mac의 경우 file://
+        this.path = path;       //윈도우 환경의 경우, file:///, mac의 경우 file://
 
         musicIndex = i;
 
-        string[] splitedPath = filePath.Split('\\');
+        string[] splitedPath = this.path.Split('\\');
         string[] splitedName = splitedPath[splitedPath.Length - 1].Split('.');
         musicName = splitedName[0];
 
@@ -38,6 +38,8 @@ public class Music : MonoBehaviour, IData
 
     IEnumerator LoadMusic()
     {
+        string filePath = $"file:///{path}";
+
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, AudioType.WAV))
         {
             yield return www.SendWebRequest();
@@ -63,8 +65,9 @@ public class Music : MonoBehaviour, IData
         return musicIndex;
     }
 
-    public List<IData> GetDatas()
+    public override string ToString()
     {
-        return null;
+        return $"{path}";
     }
+
 }

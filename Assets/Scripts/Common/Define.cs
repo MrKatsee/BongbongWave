@@ -6,5 +6,4 @@ public interface IData
 {
     string GetName();
     int GetIndex();
-    List<IData> GetDatas();
 }
