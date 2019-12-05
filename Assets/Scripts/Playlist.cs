@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Playlist : MonoBehaviour, IData
 {
+    //플레이리스트를 생성해서 Database로 넘겨줌
     public static Playlist Init_Playlist()
     {
         //MonoBehaviour을 상속한 클래스의 경우, GameObject에 Component로 존재해야한다.
@@ -110,6 +111,7 @@ public class Playlist : MonoBehaviour, IData
 
     public string GetCurrentMusicName()
     {
+        if (musics.Count == 0) return "Empty";
         return musics[curMusicIndex].GetName();
     }
 
@@ -140,7 +142,8 @@ public class Playlist : MonoBehaviour, IData
 
     public override string ToString()
     {
-        //"PlaylisIndex_PlaylistName_musicPath1&musicPath2&...&musicPathN"
+        //구분자는 '^'
+        //"PlaylisIndex^PlaylistName^musicPath1&musicPath2&...&musicPathN"
         string playlistInfo = $"{playlistIndex}^{playlistName}^";
 
         int i = 0;

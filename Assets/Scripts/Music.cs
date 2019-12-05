@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 
 public class Music : MonoBehaviour, IData
 {
+    //path를 받아 Music을 생성
     public static Music Init_Music(int i, string path)
     {
         //MonoBehaviour을 상속한 클래스의 경우, GameObject에 Component로 존재해야한다.

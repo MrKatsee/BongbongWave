@@ -28,6 +28,9 @@ public class Controller : MonoBehaviour
         {
             curPlaylist = value;
 
+            if (curPlaylist == null)
+                return;
+
             curPlaylist.Init();
             SetMusicDescriptionText(CurPlaylist.GetCurrentMusicName());
         }

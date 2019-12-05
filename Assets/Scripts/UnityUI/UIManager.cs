@@ -10,24 +10,6 @@ public enum DataType
 
 public class UIManager : MonoBehaviour
 {
-    //유니티 UI 관련된 코-드
-    /*
-        해야할 것
-        O Playlist UI 기능 구현 (Add, Delete)
-        O Music UI 디자인
-        O Music UI 기능 구현 (Select, Delete, UI_Text(PlaylistName))
-        O Music -> Playlist 버튼 구현
-        O 저장 / 불러오기
-        - Controller에 현재 재생 중인 Music Name 출력
-
-        애매한 것
-        - Music -> Playlist? Playlist -> Music?
-        - UIManager 이름? 대충 MusicSelectManager 정도가 더 나을듯
-
-        이슈
-        - 넣자마자 재생이 안됨
-    */
-
     private static UIManager instance = null;
     public static UIManager Instance
     {
@@ -56,9 +38,11 @@ public class UIManager : MonoBehaviour
 
     public void LoadButtons(DataType type)
     {
+        //버튼과 창을 불러온다
         List<IData> datas = new List<IData>();
         if (type == DataType.PLAYLIST)
         {
+            //List<Playlist> -> List<IData> 암시적 변환이 불가능해서 하나씩 넣어줘야 함 
             var playlists = DataManager.Instance.GetPlaylistAll();
 
             foreach (var playlist in playlists)
@@ -74,6 +58,7 @@ public class UIManager : MonoBehaviour
         }
         else if (type == DataType.MUSIC)
         {
+            //마찬가지로 일일이 넣어줌
             var musics = selectedPlaylist.GetDatas();
 
             foreach (var music in musics)
@@ -88,6 +73,7 @@ public class UIManager : MonoBehaviour
             musicSelectCanvasText.text = selectedPlaylist.GetName();
         }
 
+        //이미 존재하는 버튼을 지움
         foreach (var b in buttons)
         {
             b.OnDestroyCallBack();
@@ -95,6 +81,7 @@ public class UIManager : MonoBehaviour
 
         buttons = new List<ButtonObject>();
 
+        //버튼 생성
         foreach (var d in datas)
         {
             ButtonObject btn = Instantiate(btnPrefab, btnParentTransform).GetComponent<ButtonObject>();
@@ -109,6 +96,7 @@ public class UIManager : MonoBehaviour
 
     private List<ButtonObject> buttons;
 
+    //선택된 버튼
     private ButtonObject curBtn = null;
     private ButtonObject CurBtn
     {
@@ -124,6 +112,8 @@ public class UIManager : MonoBehaviour
                 curBtn.IsBtnClicked = true;
         }
     }
+
+    //ButtonObject.OnButtonClicked()에서 자신 Index와 함께 넘겨줌
     public void OnButtonsClicked(int index)
     {
         if (CurBtn == buttons[index])
@@ -138,6 +128,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    //CurBtn이 더블클릭되었을 때
     public void OnButtonDoubleClicked()
     {
         switch (curDataType)
@@ -145,12 +136,14 @@ public class UIManager : MonoBehaviour
             case DataType.NONE:
                 break;
             case DataType.PLAYLIST:
+                //해당 Playlist의 Music List를 ButtonObject로 불러옴
                 int playlistIndex = CurBtn.GetButtonData().GetIndex();
                 selectedPlaylist = DataManager.Instance.GetPlaylist(playlistIndex);
 
                 LoadButtons(DataType.MUSIC);
                 break;
             case DataType.MUSIC:
+                //Controller에 해당 Music을 선택했다고 알림
                 int musicIndex = CurBtn.GetButtonData().GetIndex();
 
                 Controller.Instance.CurPlaylist = selectedPlaylist;
@@ -226,7 +219,6 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-
 
     public void AddMusicInSelectedPlaylist(string filePath)
     {
