@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class Visualizer : MonoBehaviour
 {
-    public float minHeight = 15.0f;
-    public float maxHeight = 475.0f;
+    public float minHeight = 0.2f;
+    public float maxHeight = 6.0f;
     public float updateSensetivity = 0.5f;
     public Color VisualizerColor = Color.cyan;
     [Space(15)]
