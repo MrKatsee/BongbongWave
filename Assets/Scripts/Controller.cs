@@ -70,6 +70,7 @@ public class Controller : MonoBehaviour
 
     public void OnStartButtonClicked()
     {
+        if (CurPlaylist == null) return;
         if (isMusicOn) MusicStop();
         else MusicStart();
     }
@@ -107,6 +108,8 @@ public class Controller : MonoBehaviour
     {
         //넘길 수 있으면 Start
         //없으면 Stop
+        if (CurPlaylist == null) return;
+
         if (CurPlaylist.SkipToNext())
             MusicStart();
         else
@@ -118,6 +121,8 @@ public class Controller : MonoBehaviour
 
     public void MusicSkipToPrev()
     {
+        if (CurPlaylist == null) return;
+
         if (CurPlaylist.SkipToPrev())
             MusicStart();
         else
