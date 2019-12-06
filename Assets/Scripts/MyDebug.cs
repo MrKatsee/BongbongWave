@@ -9,7 +9,7 @@ public class MyDebug : MonoBehaviour
 
     private void Awake()
     {
-        text = GameObject.Find("Debug").GetComponent<Text>();
+        //text = GameObject.Find("Debug").GetComponent<Text>();
         
     }
 
