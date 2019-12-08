@@ -7,10 +7,11 @@ public class PlayerControl : MonoBehaviour
     GameObject player;
     public float speed=3;
     public float rotationSpeed=10;
-
+    bool canJump = true;
     // Start is called before the first frame update
     void Start()
     {
+        canJump = true;
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -53,11 +54,25 @@ public class PlayerControl : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            player.GetComponent<Rigidbody>().AddForce(new Vector3(0,20,0), ForceMode.Impulse);
+            if (canJump)
+            {
+                StartCoroutine(Jump());
+            }
         }
 
         calculatePos *= speed;
         player.GetComponent<Rigidbody>().velocity = calculatePos;
 
+    }
+
+    IEnumerator Jump()
+    {
+        Debug.Log("Jumping");
+
+        canJump = false;
+        player.GetComponent<Rigidbody>().AddForce(new Vector3(0, 600, 0));
+        yield return new WaitForSeconds(0.5f);
+        canJump = true;
+        Debug.Log("can Jump");
     }
 }
