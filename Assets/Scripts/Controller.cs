@@ -84,7 +84,7 @@ public class Controller : MonoBehaviour
         audioSource.clip = clip;
         // 클립 정보가 갱신 됐으므로 BPM을 다시 계산한다
         BPMManager.instance.UpdateBPM();
-        
+
         audioSource.Play();
 
         float playtime = CurPlaylist.playtime;
@@ -103,6 +103,7 @@ public class Controller : MonoBehaviour
 
         // BMP를 0으로 해서 비주얼라이저 정지
         BPMManager.instance.StopBPM();
+
         audioSource.Stop();
 
         isMusicOn = false;

@@ -9,6 +9,7 @@ public class EnemyControl : MonoBehaviour
         if (col.CompareTag("Player"))
         {
             SpawnManager.instance.Warp();
+            ScoreManager.instance.IncreaseScore();
         }
     }
 }

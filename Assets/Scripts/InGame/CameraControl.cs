@@ -48,6 +48,7 @@ public class CameraControl : MonoBehaviour
             }
             else
             {   // 게임을 켜라
+                ScoreManager.instance.ResetScore();
                 SpawnManager.instance.Show();
                 transform.position = target.position - offset;
                 transform.rotation = target.rotation;
