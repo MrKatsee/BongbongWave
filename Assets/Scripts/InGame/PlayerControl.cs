@@ -101,5 +101,6 @@ public class PlayerControl : MonoBehaviour
     {
         player.transform.position = spawnPosition.position;
         player.transform.rotation = spawnPosition.rotation;
+        ScoreManager.instance.ResetScore();
     }
 }
