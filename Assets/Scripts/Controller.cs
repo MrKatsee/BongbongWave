@@ -79,9 +79,12 @@ public class Controller : MonoBehaviour
     {
         //curPlaylist의 Header에 저장된 시점부터 재생한다.
         AudioClip clip = CurPlaylist.GetClip();
-        if (clip == null) return;        
+        if (clip == null) return;
 
         audioSource.clip = clip;
+        // 클립 정보가 갱신 됐으므로 BPM을 다시 계산한다
+        BPMManager.instance.UpdateBPM();
+
         audioSource.Play();
 
         float playtime = CurPlaylist.playtime;

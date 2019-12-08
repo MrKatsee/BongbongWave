@@ -4,44 +4,47 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    GameObject myPengsu;
+    GameObject player;
     public float speed=3;
+
     // Start is called before the first frame update
     void Start()
     {
-        myPengsu = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    void MakeBigger()
-    {
-        this.gameObject.transform.localScale *= 1.2f;
-    }
 
     // Update is called once per frame
     void Update()
     {
+        Vector3 calculatePos = new Vector3(0,0,0);
+
         if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
-            myPengsu.transform.Translate(-Time.deltaTime * speed, 0, 0, Space.World);
+            calculatePos += new Vector3(1, 0, 0);
         }
+        
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            myPengsu.transform.Translate(Time.deltaTime * speed, 0, 0, Space.World);
+            calculatePos += new Vector3(-1, 0, 0);
+
         }
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.RightArrow))
         {
-            myPengsu.transform.Translate(0, Time.deltaTime * speed, 0, Space.World);
+            calculatePos += new Vector3(0, 0, -1);
         }
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.RightArrow))
         {
-            myPengsu.transform.Translate(0, -Time.deltaTime * speed, 0, Space.World);
+            calculatePos += new Vector3(0, 0, 1);
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            MakeBigger();
+            player.GetComponent<Rigidbody>().AddForce(new Vector3(0,20,0));
         }
 
-    }
+        calculatePos *= speed;
+        player.GetComponent<Rigidbody>().velocity = calculatePos;
 
-    
+    }
 }
