@@ -81,7 +81,7 @@ public class UniBpmAnalyzer
             average += bpmMatchDatas[i].bpm * Mathf.FloorToInt(bpmMatchDatas[i].match * 10000f);
         }
         average = average / totalMatch;
-        Debug.Log("평균값: " + average);
+        // Debug.Log("평균값: " + average);
         Debug.Log(strBuilder.ToString());
 
         return bpm;
