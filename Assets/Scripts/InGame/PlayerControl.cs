@@ -10,6 +10,7 @@ public class PlayerControl : MonoBehaviour
     bool canJump = true;
 
     Transform spawnPosition;
+    Vector3 calculatePos;
 
     // Start is called before the first frame update
     void Start()
@@ -17,15 +18,19 @@ public class PlayerControl : MonoBehaviour
         spawnPosition = GameObject.Find("SpawnPosition").transform;
         canJump = true;
         player = GameObject.FindGameObjectWithTag("Player");
+
+        calculatePos = new Vector3(0, 0, 0);
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 calculatePos = new Vector3(0,0,0);
+        calculatePos.x = 0;
+        calculatePos.y = 0;
+        calculatePos.z = 0;
 
-        if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             calculatePos += -transform.right;
         }
@@ -56,6 +61,9 @@ public class PlayerControl : MonoBehaviour
             player.transform.Rotate(new Vector3(0, Time.deltaTime * rotationSpeed, 0), Space.Self);
         }
 
+        calculatePos *= speed;
+        player.GetComponent<Rigidbody>().velocity = calculatePos;
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (canJump)
@@ -63,10 +71,6 @@ public class PlayerControl : MonoBehaviour
                 StartCoroutine(Jump());
             }
         }
-
-
-        calculatePos *= speed;
-        player.GetComponent<Rigidbody>().velocity = calculatePos;
 
     }
 
@@ -77,10 +81,10 @@ public class PlayerControl : MonoBehaviour
         canJump = false;
         for (int i = 0; i < 20; i++)
         {
-            player.GetComponent<Rigidbody>().AddForce(new Vector3(0, 100, 0));
+            player.GetComponent<Rigidbody>().AddForce(new Vector3(0, 150, 0));
             yield return new WaitForEndOfFrame();
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.8f);
         canJump = true;
         Debug.Log("can Jump");
     }
