@@ -11,7 +11,26 @@ public class BPMManager : MonoBehaviour
     public static int _beatCountFull;
     public static int _beatCountHalfQuad;
 
-    public float _bpm;
+    private float bpm;
+    public float _bpm
+    {
+        get
+        {
+            if(bpm < 0)
+            {
+                Debug.Log("bpm -1로 출력 됨");
+                return 0;
+            }
+            else
+            {
+                return bpm;
+            }
+        }
+        set
+        {
+            bpm = value;
+        }
+    }
 
     private float _beatInterval;
     private float _beatTimer;

@@ -58,7 +58,7 @@ public class Controller : MonoBehaviour
 
     private void Test()
     {
-        AddMusic(@"C:\Users\duryk\Desktop\VisualWave\Assets\Resources\asYouWish.wav");
+        //AddMusic(@"C:\Users\duryk\Desktop\VisualWave\Assets\Resources\asYouWish.wav");
     }
 
     private void Init()
