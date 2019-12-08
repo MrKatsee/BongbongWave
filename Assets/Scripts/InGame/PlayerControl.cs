@@ -8,9 +8,13 @@ public class PlayerControl : MonoBehaviour
     public float speed=3;
     public float rotationSpeed=10;
     bool canJump = true;
+
+    Transform spawnPosition;
+
     // Start is called before the first frame update
     void Start()
     {
+        spawnPosition = GameObject.Find("SpawnPosition").transform;
         canJump = true;
         player = GameObject.FindGameObjectWithTag("Player");
     }
@@ -70,9 +74,27 @@ public class PlayerControl : MonoBehaviour
         Debug.Log("Jumping");
 
         canJump = false;
-        player.GetComponent<Rigidbody>().AddForce(new Vector3(0, 600, 0));
+        for (int i = 0; i < 20; i++)
+        {
+            player.GetComponent<Rigidbody>().AddForce(new Vector3(0, 100, 0));
+            yield return new WaitForEndOfFrame();
+        }
         yield return new WaitForSeconds(0.5f);
         canJump = true;
         Debug.Log("can Jump");
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.collider.CompareTag("Ground"))
+        {
+            MoveToSpawnPosition();
+        }
+    }
+
+    public void MoveToSpawnPosition()
+    {
+        player.transform.position = spawnPosition.position;
+        player.transform.rotation = spawnPosition.rotation;
     }
 }

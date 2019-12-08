@@ -25,8 +25,12 @@ public class CameraControl : MonoBehaviour
 
     bool isPlaying = false;
 
+    Transform spawnPosition;
+
     private void Start()
     {
+        spawnPosition = GameObject.Find("SpawnPosition").transform;
+
         target = GameObject.FindGameObjectWithTag("Player").transform;
         target.gameObject.SetActive(false);
 
@@ -44,6 +48,7 @@ public class CameraControl : MonoBehaviour
                 transform.SetParent(target.parent);
                 transform.position = originalPosition;
                 transform.rotation = originalRotation;
+                GameObject.Find("Player").GetComponent<PlayerControl>().MoveToSpawnPosition();
                 isPlaying = false;
                 target.gameObject.SetActive(false);
             }
