@@ -64,6 +64,11 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
+        if (Input.GetKey(KeyCode.N))
+        {
+            
+        }
+
         calculatePos *= speed;
         player.GetComponent<Rigidbody>().velocity = calculatePos;
 
