@@ -51,7 +51,6 @@ public class BPMManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateBPM();
     }
 
     // Update is called once per frame
@@ -90,7 +89,13 @@ public class BPMManager : MonoBehaviour
 
     public void UpdateBPM()
     {
+       
         _bpm = UniBpmAnalyzer.AnalyzeBpm(AudioSource.clip);
         Debug.Log(UniBpmAnalyzer.AnalyzeBpm(AudioSource.clip));
+    }
+
+    public void StopBPM()
+    {
+        _bpm = 0;
     }
 }

@@ -58,7 +58,7 @@ public class Controller : MonoBehaviour
 
     private void Test()
     {
-        AddMusic(@"C:\Users\CIEN1\Documents\BongbongWave\Assets\Resources\voice_iris_gameStart.wav");
+        AddMusic(@"C:\Users\duryk\Desktop\VisualWave\Assets\Resources\asYouWish.wav");
     }
 
     private void Init()
@@ -101,6 +101,8 @@ public class Controller : MonoBehaviour
         float playtime = audioSource.time;
         CurPlaylist.playtime = playtime;
 
+        // BMP를 0으로 해서 비주얼라이저 정지
+        BPMManager.instance.StopBPM();
         audioSource.Stop();
 
         isMusicOn = false;
