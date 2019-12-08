@@ -84,7 +84,7 @@ public class Controller : MonoBehaviour
         audioSource.clip = clip;
         // 클립 정보가 갱신 됐으므로 BPM을 다시 계산한다
         BPMManager.instance.UpdateBPM();
-
+        
         audioSource.Play();
 
         float playtime = CurPlaylist.playtime;

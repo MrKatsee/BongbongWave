@@ -37,7 +37,8 @@ public class CameraControl : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
         {
             if (isPlaying)
-            {
+            {   // 게임 중이였다면 꺼라
+                SpawnManager.instance.Hide();
                 transform.SetParent(target.parent);
                 transform.position = originalPosition;
                 transform.rotation = originalRotation;
@@ -46,7 +47,8 @@ public class CameraControl : MonoBehaviour
                 target.gameObject.SetActive(false);
             }
             else
-            {
+            {   // 게임을 켜라
+                SpawnManager.instance.Show();
                 transform.position = target.position - offset;
                 transform.rotation = target.rotation;
                 isPlaying = true;
