@@ -525,10 +525,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   offset: {x: 0, y: 0, z: 0}
-  pitch: 1
-  zoomSpeed: 0.4
-  minZoom: 5
-  maxZoom: 15
 --- !u!1 &464599625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1422,7 +1418,7 @@ GameObject:
   m_Component:
   - component: {fileID: 851736999}
   m_Layer: 0
-  m_Name: TopViewSpinAxis
+  m_Name: SpinAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
