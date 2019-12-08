@@ -20,21 +20,49 @@ public class CameraControl : MonoBehaviour
     public static float yawSpeed = 10f;
     private float currentYaw = 0;
 
+    Vector3 originalPosition;
+    Quaternion originalRotation;
+
+    bool isPlaying = false;
+
     private void Start()
     {
         target = GameObject.FindGameObjectWithTag("Player").transform;
+        target.gameObject.SetActive(false);
+
+        originalPosition = transform.position;
+        originalRotation = transform.rotation;
+        isPlaying = false;
     }
 
     private void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
+        {
+            if (isPlaying)
+            {
+                transform.SetParent(target.parent);
+                transform.position = originalPosition;
+                transform.rotation = originalRotation;
+                isPlaying = false;
+                target.gameObject.SetActive(false);
+            }
+            else
+            {
+                transform.position = target.position - offset;
+                transform.rotation = target.rotation;
+                isPlaying = true;
+                target.gameObject.SetActive(true);
+                transform.SetParent(target);
+            }
+        }
     }
 
     // 카메라 제어할 명령어들은 LateUpdate에
     void LateUpdate()
     {
         //offset+Zoom을 적용한 카메라
-        transform.position = target.position - offset * currentZoom;
+        //transform.position = target.position - offset * currentZoom;
         //Player를 향해서 카메라 방향 조절 
         //transform.LookAt(target.position + Vector3.up * pitch);
         //카메라를 플레이어의 position을 기준으로 회전시킨다
